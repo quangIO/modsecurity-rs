@@ -1,0 +1,25 @@
+[package]
+name = "modsecurity-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Quang Luong <rust-maintainer@okd.pw>"]
+description = "Safe wrapper around libmodsecurity"
+license = "MIT OR Apache-2.0"
+keywords = ["security", "waf", "cybersecurity"]
+categories = ["api-bindings", "web-programming"]
+links = "modsecurity"
+
+[lib]
+name = "modsecurity"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow = "1.0.79"
+autocxx = "0.26"
+cxx = "1.0.115"
+libc = "0.2.152"
+
+[build-dependencies]
+autocxx-build = "0.26"
+cc = "1.0.83"
+miette = { version = "5.10", features = ["fancy"] }
