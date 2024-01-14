@@ -70,13 +70,34 @@ impl From<ffi::modsecurity::ModSecurityIntervention> for Intervention {
 }
 
 impl<'m, 'r> Transaction<'m, 'r> {
-    pub fn new(mod_security: &'m mut ModSecurity, rules_set: &'r mut RulesSet) -> Self {
+    pub fn new(
+        mod_security: &'m mut ModSecurity,
+        rules_set: &'r mut RulesSet,
+        id: Option<&str>,
+    ) -> Self {
         // # Safety: libmodsecurity must not reassign the pointer
         let inner = unsafe {
             let modsec_ptr = mod_security.inner.as_mut().get_unchecked_mut() as *mut _;
             let ruleset_ptr = rules_set.inner.as_mut().get_unchecked_mut() as *mut _;
-            ffi::modsecurity::Transaction::new(modsec_ptr, ruleset_ptr, ptr::null_mut())
-                .within_box()
+            match id {
+                Some(id) => {
+                    let id = CString::new(id).expect("Must not contain NULL");
+                    let id_raw = id.into_raw();
+                    let tx = ffi::modsecurity::Transaction::new1(
+                        modsec_ptr,
+                        ruleset_ptr,
+                        id_raw,
+                        ptr::null_mut(),
+                    )
+                    .within_box();
+                    drop(CString::from_raw(id_raw));
+                    tx
+                }
+                None => {
+                    ffi::modsecurity::Transaction::new(modsec_ptr, ruleset_ptr, ptr::null_mut())
+                        .within_box()
+                }
+            }
         };
         Self {
             inner,
@@ -244,7 +265,7 @@ mod test {
     fn e2e() -> anyhow::Result<()> {
         let mut modsec = ModSecurity::new();
         let mut rules = RulesSet::from_paths(&["resource/sample-ruleset.conf"])?;
-        let mut tx = Transaction::new(&mut modsec, &mut rules);
+        let mut tx = Transaction::new(&mut modsec, &mut rules, Some("some-unique-id-here"));
         tx.process_connection("127.0.0.1".parse().unwrap(), 31337, "localhost", 80)?;
         tx.process_uri("/test.pl?param1=test&para2=test2", "GET", "1.1")?;
         tx.add_request_header("Host", "foo.bar")?;
