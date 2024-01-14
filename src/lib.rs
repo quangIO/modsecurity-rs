@@ -221,6 +221,15 @@ impl<'m, 'r> Transaction<'m, 'r> {
         self.inner.as_mut().processLogging();
         Ok(())
     }
+
+    pub fn to_json(&mut self, parts: u16) -> String {
+        let json = self.inner.as_mut().toJSON((parts as i32).into());
+        json.to_string()
+    }
+
+    pub fn update_status_code(&mut self, status: u16) {
+        self.inner.as_mut().updateStatusCode((status as i32).into());
+    }
 }
 
 impl ModSecurity {
