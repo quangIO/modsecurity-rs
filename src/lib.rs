@@ -138,26 +138,22 @@ impl<'m, 'r> Transaction<'m, 'r> {
         Ok(())
     }
 
-    pub fn add_request_body(&mut self, body: &str) -> anyhow::Result<()> {
-        let len = body.len();
-        let body = CString::new(body)?;
+    pub fn add_request_body(&mut self, body: &[u8]) -> anyhow::Result<()> {
         // # Safety: libmodsecurity must not reassign inner pointer
         unsafe {
             self.inner
                 .as_mut()
-                .appendRequestBody(body.as_ptr() as _, len);
+                .appendRequestBody(body.as_ptr(), body.len());
         }
         Ok(())
     }
 
-    pub fn add_response_body(&mut self, body: &str) -> anyhow::Result<()> {
-        let len = body.len();
-        let body = CString::new(body)?;
+    pub fn add_response_body(&mut self, body: &[u8]) -> anyhow::Result<()> {
         // # Safety: libmodsecurity must not reassign inner pointer
         unsafe {
             self.inner
                 .as_mut()
-                .appendResponseBody(body.as_ptr() as _, len);
+                .appendResponseBody(body.as_ptr(), body.len());
         }
         Ok(())
     }

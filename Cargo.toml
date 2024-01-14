@@ -1,6 +1,6 @@
 [package]
 name = "modsecurity-rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Quang Luong <rust-maintainer@okd.pw>"]
 description = "Safe wrapper around libmodsecurity"
@@ -21,5 +21,4 @@ libc = "0.2.152"
 
 [build-dependencies]
 autocxx-build = "0.26"
-cc = "1.0.83"
 miette = { version = "5.10", features = ["fancy"] }
