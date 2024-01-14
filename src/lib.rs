@@ -41,11 +41,11 @@ pub struct Transaction<'m, 'r> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Intervention {
-    status: u16,
-    pause: bool,
-    url: String,
-    log: String,
-    disruptive: bool,
+    pub status: u16,
+    pub pause: bool,
+    pub url: String,
+    pub log: String,
+    pub disruptive: bool,
 }
 
 unsafe fn lossy_string_from_ptr(ptr: *mut i8) -> String {

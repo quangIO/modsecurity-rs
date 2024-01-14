@@ -1,6 +1,6 @@
 [package]
 name = "modsecurity-rs"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Quang Luong <rust-maintainer@okd.pw>"]
 description = "Safe wrapper around libmodsecurity"
