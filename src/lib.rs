@@ -259,8 +259,9 @@ impl RulesSet {
             // # Safety: libmodsecurity must not reassign inner pointer
             let r: i32 = unsafe { inner.as_mut().loadFromUri(path_str_c.as_ptr()).into() };
             if r < 0i32 {
-                return Err(std::io::Error::from_raw_os_error(r))
-                    .context(format!("Adding rule: {}", p.as_ref().display()));
+                let err = inner.as_mut().getParserError();
+                return Err(std::io::Error::from_raw_os_error(-r))
+                    .context(format!("Adding rule: {} returns {}", p.as_ref().display(), err.to_string_lossy()));
             }
         }
         Ok(Self { inner })
